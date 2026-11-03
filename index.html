@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metrics Test Page — тестовая страница аналитики</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1c2333;
+      --muted: #5b6478;
+      --accent: #3b5bfd;
+      --accent-dark: #2a44c4;
+      --border: #e3e6ef;
+      --ok: #17945c;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      z-index: 10;
+    }
+    nav .brand { font-weight: 700; color: var(--accent); }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 15px;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    nav a:hover { background: var(--bg); color: var(--text); }
+    main { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 32px;
+      scroll-margin-top: 80px;
+    }
+    h1 { font-size: 34px; margin-bottom: 12px; }
+    h2 { font-size: 24px; margin-bottom: 10px; }
+    p.lead { font-size: 17px; color: var(--muted); margin-bottom: 24px; }
+    .btn {
+      display: inline-block;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      margin: 6px 8px 6px 0;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-secondary { background: #eef1ff; color: var(--accent); }
+    .btn-secondary:hover { background: #dfe5ff; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--bg); }
+    form { display: flex; flex-direction: column; gap: 14px; max-width: 420px; }
+    label { font-size: 14px; font-weight: 600; }
+    input {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      background: var(--bg);
+    }
+    input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+    .form-success {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #e8f7f0;
+      color: var(--ok);
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .hint { font-size: 13px; color: var(--muted); margin-top: 18px; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 20;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="brand">MetricsTest</span>
+    <a href="#home">Главная</a>
+    <a href="#form">Форма</a>
+    <a href="#buttons">Кнопки</a>
+  </nav>
+
+  <main>
+    <section id="home">
+      <h1>Тестовая страница аналитики</h1>
+      <p class="lead">
+        Статическая страница для проверки self-hosted систем аналитики
+        (Rybbit и Openpanel). Публикуется через GitHub Pages и отправляет
+        события на публичные бэкенды.
+      </p>
+      <button type="button" class="btn btn-primary" id="cta-start">Начать</button>
+      <button type="button" class="btn btn-outline" id="cta-learn-more">Узнать больше</button>
+      <p class="hint">Кнопка «Начать» прокручивает к форме, «Узнать больше» — к разделу с кнопками.</p>
+    </section>
+
+    <section id="form">
+      <h2>Демо-форма</h2>
+      <p class="lead">Заполните поля и отправьте форму — событие отправки уйдёт в системы аналитики.</p>
+      <form id="demo-form" novalidate>
+        <div>
+          <label for="field-name">Имя</label>
+          <input type="text" id="field-name" name="name" placeholder="Иван Иванов" required>
+        </div>
+        <div>
+          <label for="field-email">Email</label>
+          <input type="email" id="field-email" name="email" placeholder="ivan@example.com" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+      </form>
+      <div class="form-success" id="form-success">Спасибо! Форма отправлена (демо-режим).</div>
+    </section>
+
+    <section id="buttons">
+      <h2>Демо-кнопки</h2>
+      <p class="lead">Три кнопки с разными действиями: скачивание, копирование и уведомление.</p>
+      <button type="button" class="btn btn-secondary" id="btn-download">Скачать отчёт</button>
+      <button type="button" class="btn btn-secondary" id="btn-copy">Скопировать промокод</button>
+      <button type="button" class="btn btn-secondary" id="btn-toast">Показать уведомление</button>
+      <p class="hint">Промокод: <strong id="promo-code">METRICS-2026</strong></p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      var toastEl = document.getElementById('toast');
+      var toastTimer = null;
+      function showToast(text) {
+        toastEl.textContent = text;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toastEl.classList.remove('show');
+        }, 2500);
+      }
+
+      document.getElementById('cta-start').addEventListener('click', function () {
+        document.getElementById('form').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('cta-learn-more').addEventListener('click', function () {
+        document.getElementById('buttons').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('demo-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = document.getElementById('field-name').value.trim();
+        var email = document.getElementById('field-email').value.trim();
+        if (!name || !email || email.indexOf('@') === -1) {
+          showToast('Заполните имя и корректный email');
+          return;
+        }
+        document.getElementById('form-success').style.display = 'block';
+        showToast('Форма отправлена: ' + name);
+        this.reset();
+      });
+
+      document.getElementById('btn-download').addEventListener('click', function () {
+        var blob = new Blob(
+          ['Metrics Test Page — демонстрационный отчёт\n' + new Date().toISOString() + '\n'],
+          { type: 'text/plain' }
+        );
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'metrics-test-report.txt';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Файл metrics-test-report.txt скачан');
+      });
+
+      document.getElementById('btn-copy').addEventListener('click', function () {
+        var text = document.getElementById('promo-code').textContent;
+        function done() { showToast('Промокод ' + text + ' скопирован'); }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () { showToast(text); });
+        } else {
+          var tmp = document.createElement('textarea');
+          tmp.value = text;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          tmp.remove();
+          done();
+        }
+      });
+
+      document.getElementById('btn-toast').addEventListener('click', function () {
+        showToast('Это тестовое уведомление');
+      });
+    })();
+  </script>
+</body>
+</html>
