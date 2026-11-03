@@ -4,6 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Metrics Test Page — тестовая страница аналитики</title>
+  <script src="https://rybbit.dev.altcraft.com/api/script.js?siteId=8ae159e0de32" defer></script>
+  <script>
+    window.op = window.op || function () {
+      var q = [];
+      return new Proxy(function () {
+        arguments.length && q.push([].slice.call(arguments));
+      }, {
+        get: function (t, r) {
+          return "q" === r ? q : function () { q.push([r].concat([].slice.call(arguments))); };
+        },
+        has: function (t, r) { return "q" === r; }
+      });
+    }();
+    window.op('init', {
+      clientId: '649648d9-d2a4-4a62-9600-f919195de7e6',
+      apiUrl: 'https://openpanel.dev.altcraft.com/api',
+      trackScreenViews: true,
+      trackOutgoingLinks: true,
+      trackAttributes: true
+    });
+  </script>
+  <script src="https://openpanel.dev.altcraft.com/op1.js" defer async></script>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -126,7 +148,7 @@
         (Rybbit и Openpanel). Публикуется через GitHub Pages и отправляет
         события на публичные бэкенды.
       </p>
-      <button type="button" class="btn btn-primary" id="cta-start">Начать</button>
+      <button type="button" class="btn btn-primary" id="cta-start" data-rybbit-event="cta_click" data-track="cta_click">Начать</button>
       <button type="button" class="btn btn-outline" id="cta-learn-more">Узнать больше</button>
       <p class="hint">Кнопка «Начать» прокручивает к форме, «Узнать больше» — к разделу с кнопками.</p>
     </section>
@@ -151,9 +173,9 @@
     <section id="buttons">
       <h2>Демо-кнопки</h2>
       <p class="lead">Три кнопки с разными действиями: скачивание, копирование и уведомление.</p>
-      <button type="button" class="btn btn-secondary" id="btn-download">Скачать отчёт</button>
-      <button type="button" class="btn btn-secondary" id="btn-copy">Скопировать промокод</button>
-      <button type="button" class="btn btn-secondary" id="btn-toast">Показать уведомление</button>
+      <button type="button" class="btn btn-secondary" id="btn-download" data-rybbit-event="demo_button_click" data-rybbit-prop-button-id="download" data-track="demo_button_click" data-button-id="download">Скачать отчёт</button>
+      <button type="button" class="btn btn-secondary" id="btn-copy" data-rybbit-event="demo_button_click" data-rybbit-prop-button-id="copy" data-track="demo_button_click" data-button-id="copy">Скопировать промокод</button>
+      <button type="button" class="btn btn-secondary" id="btn-toast" data-rybbit-event="demo_button_click" data-rybbit-prop-button-id="toast" data-track="demo_button_click" data-button-id="toast">Показать уведомление</button>
       <p class="hint">Промокод: <strong id="promo-code">METRICS-2026</strong></p>
     </section>
   </main>
@@ -191,6 +213,8 @@
         }
         document.getElementById('form-success').style.display = 'block';
         showToast('Форма отправлена: ' + name);
+        if (window.rybbit) rybbit.event('form_submit', { form: 'demo-form' });
+        if (window.op) op('track', 'form_submit', { form: 'demo-form' });
         this.reset();
       });
 
@@ -212,7 +236,11 @@
 
       document.getElementById('btn-copy').addEventListener('click', function () {
         var text = document.getElementById('promo-code').textContent;
-        function done() { showToast('Промокод ' + text + ' скопирован'); }
+        function done() {
+          showToast('Промокод ' + text + ' скопирован');
+          if (window.rybbit) rybbit.event('promo_copied', { promo: text });
+          if (window.op) op('track', 'promo_copied', { promo: text });
+        }
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(done, function () { showToast(text); });
         } else {
